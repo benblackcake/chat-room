@@ -1,0 +1,57 @@
+{% load static %}
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<link href="{% static 'css/chatroom2.css' %}" rel="stylesheet">
+<link href="{% static 'css/base.css' %}" rel="stylesheet" id="bootstrap-css">
+<script src="https://use.fontawesome.com/45e03a14ce.js"></script>
+
+
+<!------ Include the above in your HEAD tag ---------->
+<div id="wrapper" class="animate">
+        <nav class="navbar header-top fixed-top navbar-expand-lg  navbar-dark bg-dark">
+          <span class="navbar-toggler-icon leftmenutrigger"></span>
+          <a class="navbar-brand" href="/chat">Ben's World</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav animate side-nav">
+              <li class="nav-item">
+                <a class="nav-link" href="/chat">Chat Room
+                  <span class="sr-only">(current)</span>
+                </a>
+              </li>
+
+            </ul>
+            <ul class="navbar-nav ml-md-auto d-md-flex">
+             {% if request.user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="/member/logout">Hi~{{ request.user.username }}  Logout
+                  <span class="sr-only">(current)</span>
+                </a>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="/member">Login
+                  <span class="sr-only">(current)</span>
+                </a>
+              </li>
+            {% endif %}
+            </ul>
+          </div>
+        </nav>
+        <div class="container">
+            {% block content %}
+            {% endblock %}
+        </div>
+</div>
+
+<script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
+      crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+  <script src="{% static 'js/base.js' %}"></script>

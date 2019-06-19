@@ -1,0 +1,110 @@
+<!-- chat/templates/chat/room.html -->
+{% extends "base.html" %}
+{% load static %}
+{##}
+{#<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">#}
+{#<link href="{% static 'css/chatroom2.css' %}" rel="stylesheet" id="bootstrap-css">#}
+
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8"/>
+    <title>Chat Room</title>
+</head>
+{% block content %}
+
+<div class="main_section">
+    <!--new_message_head-->
+
+    <div class="chat_area" id="all_messages">
+        <ul class="list-unstyled">
+        {% if request.user.is_authenticated %}
+            {% for message in chat_messages %}
+                {% if message.user == user %}
+                    <li class="left clearfix admin_chat">
+                        <span class="chat-img1 pull-right">
+                            <img src="http://placehold.it/50/FA6F57/fff&text=ME"
+                                alt="User Avatar" class="img-circle">
+                        </span>
+                        <div class="chat-body1 clearfix">
+                            <p>{{ message.message|safe }}</p>
+                            <div class="chat_time pull-left">{{message.created|date:"H:i"}}</div>
+                        </div>
+                    </li>
+                {% else %}
+                    <li class="left clearfix">
+                        <span class="chat-img1 pull-left">
+                            <img src="http://placehold.it/50/55C1E7/fff&text=U"
+                                alt="User Avatar" class="img-circle">
+                        </span>
+                        <div class="chat-body1 clearfix">
+                            <p>{{ message.message|safe }}</p>
+                            <div class="chat_time pull-right">{{message.created|date:"H:i"}}</div>
+                        </div>
+                    </li>
+                {% endif %}
+            {% empty %}
+            {% endfor %}
+        {% else %}
+            <div>Please Login</div>
+        {% endif %}
+
+        </ul>
+    </div>
+    <!--chat_area-->
+    <div class="message_write">
+        <input id="btn-input" type="text" class="form-control" placeholder="type a message"></textarea>
+        <div class="clearfix"></div>
+        <div class="chat_bottom">
+            <button id="btn-chat" class="pull-right btn btn-success">Send</button>
+        </div>
+    </div>
+</div>
+<script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
+      crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+
+
+<script>
+    $('#all_messages').scrollTop($('#all_messages')[0].scrollHeight);
+    var room_mame = '{{ room_name }}';
+    var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+    var websocket_str= ws_scheme+'://' + window.location.host + '/ws/chat/' + room_mame + '/';
+    var chatSocket = new WebSocket(websocket_str);
+    chatSocket.onmessage = function (e) {
+        var data = JSON.parse(e.data);
+        var message = data['message'];
+        var now_time = data['now_time'];
+        var receive_user = data['user'];
+        var user = "{{user}}";
+        if (receive_user === user) {
+            $('<li class="left clearfix admin_chat"><span class="chat-img1 pull-right"><img src="http://placehold.it/50/FA6F57/fff&text=ME" alt="User Avatar" class="img-circle"></span><div class="chat-body1 clearfix"><p>'+message+'</p><div class="chat_time pull-left">'+now_time+'</div></div></li>').appendTo($('.list-unstyled'))
+
+        }
+        else{
+            $('<li class="left clearfix"><span class="chat-img1 pull-left"><img src="http://placehold.it/50/55C1E7/fff&text=U" alt="User Avatar" class="img-circle"></span><div class="chat-body1 clearfix"><p>'+message+'</p><div class="chat_time pull-right">'+now_time+'</div></div></li>').appendTo($('.list-unstyled'))
+        }
+        $('#all_messages').scrollTop($('#all_messages')[0].scrollHeight);
+        };
+        chatSocket.onclose = function (e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+        $("#btn-input").focus();
+        $("#btn-input").keyup(function(e){
+          if (e.keyCode === 13) {  // enter, return
+                $("#btn-chat").click();
+            }
+        });
+        $("#btn-chat").click(function() {
+          var message = $('#btn-input').val();
+          chatSocket.send(JSON.stringify({
+                'message': message
+          }));
+          $('#btn-input').val('');
+        });
+</script>
+{% endblock %}
+

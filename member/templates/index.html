@@ -1,0 +1,75 @@
+{% load static %}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<link href="{% static 'css/login.css' %}" rel="stylesheet" id="bootstrap-css">
+
+<!------ Include the above in your HEAD tag ---------->
+
+<div class="container">
+  <div class="overlay" id="overlay">
+    <div class="sign-in" id="sign-in">
+      <h1>Welcome Back!</h1>
+      <p>Ben製作的簡易聊天室</p>
+      <p>請註冊帳號後登入,接著輸入聊天室名稱</p>
+      <button class="switch-button" id="slide-right-button">Sign In</button>
+    </div>
+    <div class="sign-up" id="sign-up">
+      <h1>Hello, Friend!</h1>
+      <p>Enter your personal details and start a journey with us</p>
+      <button class="switch-button" id="slide-left-button">Sign Up</button>
+    </div>
+  </div>
+
+  {% if request.user.is_authenticated %}
+      <!--登入-->  <div class="overlay" id="overlay">
+    <div class="sign-in" id="sign-in">
+      <h1>Hello, Friend!</h1>
+      <p>{{ request.user.username }}　已經登入囉~~</p>
+      <a href="member/logout" id="slide-left-button">Sign Up</a>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="form">
+
+
+    <!--註冊end-->
+
+    <div class="sign-in" id="sign-in-info">
+      <h1>Sign In</h1>
+
+      <form id="sign-in-form" action="member/login" method="post"> {% csrf_token %}
+        <input type="text" placeholder="User Name" name="username" required/>
+        <input type="password" placeholder="Password" name="password" required/>
+        <!-- <p class="forgot-password">Forgot your password?</p> -->
+        <button class="control-button in">Sign In</button>
+      </form>
+    </div>
+    <!--登入END-->
+
+    <!--註冊-->
+
+    <div class="sign-up" id="sign-up-info">
+      <h1>Create Account</h1>
+      <form id="sign-up-form" method="post">{% csrf_token %}
+        <input type="text" placeholder="Name" name="username"/>
+        <input type="email" placeholder="Email" name="email"/>
+        <input type="password" placeholder="Password" name="password"/>
+        <button class="control-button up">Sign Up</button>
+      </form>
+    </div>
+      {% endif %}
+  </div>
+</div>
+{% if message %}
+    <script>
+        alert("帳號或密碼錯誤");
+    </script>
+{% endif %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script
+  src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+  integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+  crossorigin="anonymous"></script>
+
+<script src="{% static 'js/login.js' %}"></script>
