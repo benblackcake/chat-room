@@ -78,7 +78,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [('127.0.0.1', 6379)],
+            'hosts': [('redis://redistogo:f9598a7554b5eb41d9231c4937099aa3@hammerjaw.redistogo.com:9853/', 9583)],
         },
     }
 }
